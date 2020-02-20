@@ -1,0 +1,22 @@
+name: Docker build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Docker Buildx
+      uses: crazy-max/ghaction-docker-buildx@v1.0.5
+      with:
+        # Buildx version. Example: v0.3.0
+        version: latest
+        
+    - uses: actions/checkout@v1
+      
+    - name: Build the Docker image and push
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        docker buildx build --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64 --tag spx01/docker-openvpn --push .
